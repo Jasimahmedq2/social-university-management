@@ -6,6 +6,8 @@ import express, {
   urlencoded,
 } from 'express';
 import cors from 'cors';
+import { MainRouter } from './app/route';
+import globalMiddleware from './app/middlewar/globalMIddlewar';
 
 const app: Application = express();
 
@@ -16,6 +18,9 @@ app.use(urlencoded({ extended: true }));
 app.get('/', (req: Request, res: Response) => {
   res.json('db running perfectly');
 });
+
+app.use('/api/v1', MainRouter);
+app.use(globalMiddleware);
 
 // not found route
 app.use((req: Request, res: Response, next: NextFunction) => {
