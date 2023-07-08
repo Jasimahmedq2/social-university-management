@@ -1,4 +1,6 @@
 import ApiError from '../../../errors/apiErrors';
+import { IPost } from '../post/post.interfaces';
+import { Post } from '../post/post.model';
 import { IUser } from './user.interfaces';
 import { User } from './user.model';
 
@@ -11,6 +13,28 @@ const createUser = async (userInfo: IUser) => {
 const getAllUser = async (): Promise<IUser[]> => {
   const result = await User.find({});
   return result;
+};
+const getFriends = async (userId: string): Promise<IUser[] | IUser | null> => {
+  const result = await User.findOne(
+    { _id: userId },
+    { followers: 1, _id: 0 }
+  ).populate('followers');
+  console.log({ result });
+
+  return result;
+};
+
+const userFeedPost = async (userId: string): Promise<IPost[]> => {
+  const user = await User.findById(userId);
+  const followers = user?.followers;
+
+  const posts = await Post.find({
+    $or: [{ user: userId }, { user: { $in: followers } }],
+  })
+    .populate('user')
+    .sort('-createdAt');
+  console.log({ posts });
+  return posts;
 };
 
 const getSingleUser = async (id: string): Promise<IUser | null> => {
@@ -103,4 +127,6 @@ export const userServices = {
   updateUser,
   userFollowing,
   unFollowingUser,
+  getFriends,
+  userFeedPost,
 };

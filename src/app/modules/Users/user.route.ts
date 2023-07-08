@@ -13,7 +13,8 @@ router.post(
   userControllers.createUser
 );
 router.get('/get-users', userControllers.getAllUser);
-router.get('/get-user/:id', userControllers.getSingleUser);
+router.get('/get-friends', auth(UserRole.USER), userControllers.getFriends);
+router.get('/get-feed', auth(UserRole.USER), userControllers.userFeedPost);
 router.delete('/delete-user/:id', userControllers.deleteUser);
 router.patch(
   '/update-user/:id',

@@ -5,7 +5,7 @@ const PostSchema = new Schema<IPost>(
   {
     user: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'user',
       required: true,
     },
     image: {
@@ -17,7 +17,7 @@ const PostSchema = new Schema<IPost>(
     likes: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'user',
         default: [],
       },
     ],
@@ -26,7 +26,7 @@ const PostSchema = new Schema<IPost>(
         {
           user: {
             type: Schema.Types.ObjectId,
-            ref: 'User',
+            ref: 'user',
             required: true,
           },
           text: {
