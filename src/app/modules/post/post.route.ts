@@ -13,11 +13,7 @@ router.post(
   validateRequest(PostValidation.createPostZodSchema),
   PostControllers.createPost
 );
-router.get(
-  '/get-posts',
-  auth(UserRole.USER),
-  PostControllers.getAllPost
-);
+router.get('/get-posts', auth(UserRole.USER), PostControllers.getAllPost);
 router.get(
   '/get-user-profile-post',
   auth(UserRole.USER),

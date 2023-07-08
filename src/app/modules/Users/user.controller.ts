@@ -58,10 +58,47 @@ const updateUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const userFollowing = catchAsync(async (req: Request, res: Response) => {
+  const userId = req?.user?.userId;
+  const { followerId } = req.params;
+
+  console.log({
+    userId,
+    followerId,
+  });
+
+  const result = await userServices.userFollowing(userId, followerId);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'successfully followed the user',
+    data: result,
+  });
+});
+const unFollowingUser = catchAsync(async (req: Request, res: Response) => {
+  const userId = req?.user?.userId;
+  const { followerId } = req.params;
+
+  console.log({
+    userId,
+    followerId,
+  });
+
+  const result = await userServices.unFollowingUser(userId, followerId);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'successfully unFollowed the user',
+    data: result,
+  });
+});
+
 export const userControllers = {
   createUser,
   getAllUser,
   getSingleUser,
   deleteUser,
   updateUser,
+  userFollowing,
+  unFollowingUser
 };
