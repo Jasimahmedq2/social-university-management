@@ -8,6 +8,18 @@ const cratePost = async (id: Types.ObjectId, payload: IPost) => {
   const result = await Post.create(payload);
   return result;
 };
+const getAllPost = async (): Promise<IPost[]> => {
+  const result = await Post.find({});
+  return result;
+};
+const getUserAllPost = async (userId: string): Promise<IPost[]> => {
+  const result = await Post.find({ user: userId });
+  return result;
+};
+const getSinglePost = async (postId: string): Promise<IPost | null> => {
+  const result = await Post.findOne({ _id: postId });
+  return result;
+};
 const createCommentToPost = async (
   postId: string,
   userId: Types.ObjectId,
@@ -65,8 +77,23 @@ const postLikeDislike = async (
   return result;
 };
 
+const deletePost = async (postId: string) => {
+  const result = await Post.deleteOne({ _id: postId });
+  return result;
+};
+
+const updatePost = async (postId: string, payload: Partial<IPost>) => {
+  const result = await Post.updateOne({ _id: postId }, payload, { new: true });
+  return result;
+};
+
 export const PostServices = {
   cratePost,
   createCommentToPost,
   postLikeDislike,
+  deletePost,
+  updatePost,
+  getAllPost,
+  getSinglePost,
+  getUserAllPost,
 };

@@ -17,6 +17,43 @@ const createPost = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllPost = catchAsync(async (req: Request, res: Response) => {
+  const result = await PostServices.getAllPost();
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'successfully get all post',
+    data: result,
+  });
+});
+
+const getUserAllPost = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+  const userId = user?.userId;
+  console.log({user, userId})
+  const result = await PostServices.getUserAllPost(userId);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'successfully get user all post',
+    data: result,
+  });
+});
+
+const getSinglePost = catchAsync(async (req: Request, res: Response) => {
+  const { postId } = req.params;
+  const result = await PostServices.getSinglePost(postId);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'successfully get a post',
+    data: result,
+  });
+});
+
 const createCommentToPost = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
   const userId = user?.userId;
@@ -45,8 +82,38 @@ const postLikeDislike = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const deletePost = catchAsync(async (req: Request, res: Response) => {
+  const { postId } = req.params;
+  const result = await PostServices.deletePost(postId);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'success deleted a post',
+    data: result,
+  });
+});
+
+const updatePost = catchAsync(async (req: Request, res: Response) => {
+  const { postId } = req.params;
+  const { ...postInfo } = req.body;
+  const result = await PostServices.updatePost(postId, postInfo);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'success deleted a post',
+    data: result,
+  });
+});
+
 export const PostControllers = {
   createPost,
   createCommentToPost,
-  postLikeDislike
+  postLikeDislike,
+  deletePost,
+  updatePost,
+  getAllPost,
+  getSinglePost,
+  getUserAllPost,
 };

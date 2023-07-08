@@ -13,6 +13,21 @@ router.post(
   validateRequest(PostValidation.createPostZodSchema),
   PostControllers.createPost
 );
+router.get(
+  '/get-posts',
+  auth(UserRole.USER),
+  PostControllers.getAllPost
+);
+router.get(
+  '/get-user-profile-post',
+  auth(UserRole.USER),
+  PostControllers.getUserAllPost
+);
+router.get(
+  '/get-post/:postId',
+  auth(UserRole.USER),
+  PostControllers.getSinglePost
+);
 router.post(
   '/create-comment/:postId',
   auth(UserRole.USER),
@@ -23,6 +38,16 @@ router.post(
   '/like-dislike/:postId',
   auth(UserRole.USER),
   PostControllers.postLikeDislike
+);
+router.delete(
+  '/delete-post/:postId',
+  auth(UserRole.USER),
+  PostControllers.deletePost
+);
+router.patch(
+  '/update-post/:postId',
+  auth(UserRole.USER),
+  PostControllers.updatePost
 );
 
 export const postRoutes = router;
