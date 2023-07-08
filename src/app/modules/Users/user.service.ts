@@ -7,6 +7,30 @@ const createUser = async (userInfo: IUser) => {
   return result;
 };
 
+const getAllUser = async (): Promise<IUser[]> => {
+  const result = await User.find({});
+  return result;
+};
+
+const getSingleUser = async (id: string): Promise<IUser | null> => {
+  const result = await User.findById(id);
+  return result;
+};
+
+const deleteUser = async (id: string) => {
+  const result = await User.findByIdAndDelete(id);
+  return result;
+};
+
+const updateUser = async (id: string, payload: Partial<IUser>) => {
+  const result = await User.updateOne({ _id: id }, payload, { new: true });
+  return result;
+};
+
 export const userServices = {
   createUser,
+  getAllUser,
+  getSingleUser,
+  deleteUser,
+  updateUser,
 };

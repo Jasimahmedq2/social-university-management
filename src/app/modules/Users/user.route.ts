@@ -10,5 +10,13 @@ router.post(
   validateRequest(userZodValidation.createUserZodSchema),
   userControllers.createUser
 );
+router.get('/get-users', userControllers.getAllUser);
+router.get('/get-user/:id', userControllers.getSingleUser);
+router.delete('/delete-user/:id', userControllers.deleteUser);
+router.patch(
+  '/update-user/:id',
+  validateRequest(userZodValidation.updateUserZodSchema),
+  userControllers.updateUser
+);
 
 export const userRoutes = router;
