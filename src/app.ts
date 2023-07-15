@@ -13,9 +13,15 @@ import cookieParser from 'cookie-parser';
 const app: Application = express();
 
 app.use(express.json());
-app.use(cors());
 app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true,
+};
+app.use(cors(corsOptions));
+
+app.use(cors(corsOptions));
 
 app.get('/', (req: Request, res: Response) => {
   res.json('db running perfectly');

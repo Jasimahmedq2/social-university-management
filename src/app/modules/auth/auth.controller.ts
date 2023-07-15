@@ -6,8 +6,9 @@ import config from '../../../config';
 
 const loginUser = catchAsync(async (req: Request, res: Response) => {
   const { ...loginInfo } = req.body;
+  console.log({ loginInfo });
   const result = await AuthServices.loginUser(loginInfo);
-  const { accessToken, refreshToken } = result;
+  const { accessToken, refreshToken, user } = result;
 
   const cookieOptions = {
     secure: config.env === 'production',
@@ -19,7 +20,7 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
     statusCode: 200,
     success: true,
     message: 'successfully login a user',
-    data: { accessToken },
+    data: { accessToken, user },
   });
 });
 

@@ -23,6 +23,22 @@ const getFriends = async (userId: string): Promise<IUser[] | IUser | null> => {
 
   return result;
 };
+const getSuggestedFriends = async (
+  userId: string
+): Promise<IUser[] | IUser | null> => {
+  const currentUser = await User.findById(userId);
+  const currentFriends = currentUser?.followers;
+
+  const result = await User.find(
+    {
+      _id: { $nin: [...currentFriends, userId] },
+    },
+    { name: 1, profilePic: 1,}
+  );
+  console.log({ result });
+
+  return result;
+};
 
 const userFeedPost = async (userId: string): Promise<IPost[]> => {
   const user = await User.findById(userId);
@@ -38,6 +54,10 @@ const userFeedPost = async (userId: string): Promise<IPost[]> => {
 };
 
 const getSingleUser = async (id: string): Promise<IUser | null> => {
+  const result = await User.findById(id);
+  return result;
+};
+const getSingleUserWithId = async (id: string): Promise<IUser | null> => {
   const result = await User.findById(id);
   return result;
 };
@@ -123,10 +143,12 @@ export const userServices = {
   createUser,
   getAllUser,
   getSingleUser,
+  getSingleUserWithId,
   deleteUser,
   updateUser,
   userFollowing,
   unFollowingUser,
   getFriends,
+  getSuggestedFriends,
   userFeedPost,
 };

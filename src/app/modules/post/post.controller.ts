@@ -29,9 +29,7 @@ const getAllPost = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getUserAllPost = catchAsync(async (req: Request, res: Response) => {
-  const user = req.user;
-  const userId = user?.userId;
-  console.log({user, userId})
+  const { userId } = req.params;
   const result = await PostServices.getUserAllPost(userId);
 
   sendResponse(res, {
@@ -97,6 +95,7 @@ const deletePost = catchAsync(async (req: Request, res: Response) => {
 const updatePost = catchAsync(async (req: Request, res: Response) => {
   const { postId } = req.params;
   const { ...postInfo } = req.body;
+  console.log({ postId, postInfo });
   const result = await PostServices.updatePost(postId, postInfo);
 
   sendResponse(res, {

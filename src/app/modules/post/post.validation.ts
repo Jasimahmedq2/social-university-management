@@ -8,7 +8,9 @@ const createPostZodSchema = z.object({
 });
 const createCommentZodSchema = z.object({
   body: z.object({
-    text: z.string(),
+    text: z.string({
+      required_error: 'text is required',
+    }),
   }),
 });
 

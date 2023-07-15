@@ -15,7 +15,7 @@ router.post(
 );
 router.get('/get-posts', auth(UserRole.USER), PostControllers.getAllPost);
 router.get(
-  '/get-user-profile-post',
+  '/get-user-profile-post/:userId',
   auth(UserRole.USER),
   PostControllers.getUserAllPost
 );

@@ -33,6 +33,16 @@ const getFriends = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getSuggestedFriends = catchAsync(async (req: Request, res: Response) => {
+  const userId = req?.user?.userId;
+  const result = await userServices.getSuggestedFriends(userId);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'successfully get all suggested friends',
+    data: result,
+  });
+});
 const userFeedPost = catchAsync(async (req: Request, res: Response) => {
   const userId = req?.user?.userId;
   const result = await userServices.userFeedPost(userId);
@@ -45,8 +55,19 @@ const userFeedPost = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getSingleUser = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const id = req?.user?.userId;
   const result = await userServices.getSingleUser(id);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'successfully get a user',
+    data: result,
+  });
+});
+
+const getSingleUserWithId = catchAsync(async (req: Request, res: Response) => {
+  const {userId} = req.params;
+  const result = await userServices.getSingleUserWithId(userId);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -117,10 +138,12 @@ export const userControllers = {
   createUser,
   getAllUser,
   getSingleUser,
+  getSingleUserWithId,
   deleteUser,
   updateUser,
   userFollowing,
   unFollowingUser,
   getFriends,
+  getSuggestedFriends,
   userFeedPost,
 };

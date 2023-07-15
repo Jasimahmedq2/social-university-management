@@ -14,8 +14,15 @@ router.post(
 );
 router.get('/get-users', userControllers.getAllUser);
 router.get('/get-friends', auth(UserRole.USER), userControllers.getFriends);
+router.get('/get-suggestedFriends', auth(UserRole.USER), userControllers.getSuggestedFriends);
 router.get('/get-feed', auth(UserRole.USER), userControllers.userFeedPost);
 router.delete('/delete-user/:id', userControllers.deleteUser);
+router.get('/get-user', auth(UserRole.USER), userControllers.getSingleUser);
+router.get(
+  '/get-user/:userId',
+  auth(UserRole.USER),
+  userControllers.getSingleUserWithId
+);
 router.patch(
   '/update-user/:id',
   validateRequest(userZodValidation.updateUserZodSchema),

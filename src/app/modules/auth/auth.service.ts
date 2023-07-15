@@ -44,6 +44,11 @@ const loginUser = async (loginInfo: ILoginInfo): Promise<ILoginResponse> => {
   return {
     accessToken: accessToken,
     refreshToken: refreshToken,
+    user: {
+      userId: isUserExist?._id.toString(),
+      email: isUserExist?.email,
+      name: isUserExist?.name,
+    },
   };
 };
 
