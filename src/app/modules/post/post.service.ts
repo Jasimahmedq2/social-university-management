@@ -37,12 +37,7 @@ const createCommentToPost = async (
   if (!post) {
     throw new ApiError(404, "post doesn't exist");
   }
-  console.log({
-    post: post,
-    userId: userId,
-    postId: postId,
-    text: text,
-  });
+
 
   const newComment = {
     user: userId,
