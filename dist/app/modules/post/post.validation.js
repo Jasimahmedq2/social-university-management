@@ -10,7 +10,9 @@ const createPostZodSchema = zod_1.z.object({
 });
 const createCommentZodSchema = zod_1.z.object({
     body: zod_1.z.object({
-        text: zod_1.z.string(),
+        text: zod_1.z.string({
+            required_error: 'text is required',
+        }),
     }),
 });
 exports.PostValidation = {

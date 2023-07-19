@@ -41,6 +41,11 @@ const loginUser = (loginInfo) => __awaiter(void 0, void 0, void 0, function* () 
     return {
         accessToken: accessToken,
         refreshToken: refreshToken,
+        user: {
+            userId: isUserExist === null || isUserExist === void 0 ? void 0 : isUserExist._id.toString(),
+            email: isUserExist === null || isUserExist === void 0 ? void 0 : isUserExist.email,
+            name: isUserExist === null || isUserExist === void 0 ? void 0 : isUserExist.name,
+        },
     };
 });
 const refreshToken = (refreshToken) => __awaiter(void 0, void 0, void 0, function* () {

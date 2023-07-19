@@ -30,6 +30,22 @@ const getFriends = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     console.log({ result });
     return result;
 });
+const getSuggestedFriends = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const currentUser = yield user_model_1.User.findById(userId);
+    const currentFriends = currentUser === null || currentUser === void 0 ? void 0 : currentUser.followers;
+    let result;
+    if (currentFriends) {
+        result = yield user_model_1.User.find({
+            _id: { $nin: [...currentFriends, userId] },
+        }, { name: 1, profilePic: 1 });
+    }
+    else {
+        result = yield user_model_1.User.find({
+            _id: { $ne: userId },
+        }, { name: 1, profilePic: 1 });
+    }
+    return result;
+});
 const userFeedPost = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield user_model_1.User.findById(userId);
     const followers = user === null || user === void 0 ? void 0 : user.followers;
@@ -42,6 +58,10 @@ const userFeedPost = (userId) => __awaiter(void 0, void 0, void 0, function* () 
     return posts;
 });
 const getSingleUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield user_model_1.User.findById(id);
+    return result;
+});
+const getSingleUserWithId = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield user_model_1.User.findById(id);
     return result;
 });
@@ -107,10 +127,12 @@ exports.userServices = {
     createUser,
     getAllUser,
     getSingleUser,
+    getSingleUserWithId,
     deleteUser,
     updateUser,
     userFollowing,
     unFollowingUser,
     getFriends,
+    getSuggestedFriends,
     userFeedPost,
 };

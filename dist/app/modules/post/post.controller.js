@@ -49,9 +49,7 @@ const getAllPost = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
     });
 }));
 const getUserAllPost = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = req.user;
-    const userId = user === null || user === void 0 ? void 0 : user.userId;
-    console.log({ user, userId });
+    const { userId } = req.params;
     const result = yield post_service_1.PostServices.getUserAllPost(userId);
     (0, sendResponse_1.default)(res, {
         statusCode: 200,
@@ -108,6 +106,7 @@ const deletePost = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
 const updatePost = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { postId } = req.params;
     const postInfo = __rest(req.body, []);
+    console.log({ postId, postInfo });
     const result = yield post_service_1.PostServices.updatePost(postId, postInfo);
     (0, sendResponse_1.default)(res, {
         statusCode: 200,

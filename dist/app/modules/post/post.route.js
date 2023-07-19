@@ -13,7 +13,7 @@ const post_controller_1 = require("./post.controller");
 const router = express_1.default.Router();
 router.post('/create-post', (0, auth_1.default)(enums_1.UserRole.USER), (0, validateRequest_1.default)(post_validation_1.PostValidation.createPostZodSchema), post_controller_1.PostControllers.createPost);
 router.get('/get-posts', (0, auth_1.default)(enums_1.UserRole.USER), post_controller_1.PostControllers.getAllPost);
-router.get('/get-user-profile-post', (0, auth_1.default)(enums_1.UserRole.USER), post_controller_1.PostControllers.getUserAllPost);
+router.get('/get-user-profile-post/:userId', (0, auth_1.default)(enums_1.UserRole.USER), post_controller_1.PostControllers.getUserAllPost);
 router.get('/get-post/:postId', (0, auth_1.default)(enums_1.UserRole.USER), post_controller_1.PostControllers.getSinglePost);
 router.post('/create-comment/:postId', (0, auth_1.default)(enums_1.UserRole.USER), (0, validateRequest_1.default)(post_validation_1.PostValidation.createCommentZodSchema), post_controller_1.PostControllers.createCommentToPost);
 router.post('/like-dislike/:postId', (0, auth_1.default)(enums_1.UserRole.USER), post_controller_1.PostControllers.postLikeDislike);

@@ -29,14 +29,23 @@ const getSuggestedFriends = async (
   const currentUser = await User.findById(userId);
   const currentFriends = currentUser?.followers;
 
-  const result = await User.find(
-    {
-      _id: { $nin: [...currentFriends, userId] },
-    },
-    { name: 1, profilePic: 1,}
-  );
-  console.log({ result });
+  let result;
 
+  if (currentFriends) {
+    result = await User.find(
+      {
+        _id: { $nin: [...currentFriends, userId] },
+      },
+      { name: 1, profilePic: 1 }
+    );
+  } else {
+    result = await User.find(
+      {
+        _id: { $ne: userId },
+      },
+      { name: 1, profilePic: 1 }
+    );
+  }
   return result;
 };
 

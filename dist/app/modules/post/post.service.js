@@ -21,15 +21,22 @@ const cratePost = (id, payload) => __awaiter(void 0, void 0, void 0, function* (
     return result;
 });
 const getAllPost = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield post_model_1.Post.find({});
+    const result = yield post_model_1.Post.find({})
+        .populate('user')
+        .populate('comments.user')
+        .sort({ createdAt: -1 });
     return result;
 });
 const getUserAllPost = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield post_model_1.Post.find({ user: userId });
+    const result = yield post_model_1.Post.find({ user: userId }).populate('user')
+        .populate('comments.user')
+        .sort({ createdAt: -1 });
     return result;
 });
 const getSinglePost = (postId) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield post_model_1.Post.findOne({ _id: postId });
+    const result = yield post_model_1.Post.findOne({ _id: postId })
+        .populate('user')
+        .populate('comments.user');
     return result;
 });
 const createCommentToPost = (postId, userId, text) => __awaiter(void 0, void 0, void 0, function* () {
@@ -37,12 +44,6 @@ const createCommentToPost = (postId, userId, text) => __awaiter(void 0, void 0, 
     if (!post) {
         throw new apiErrors_1.default(404, "post doesn't exist");
     }
-    console.log({
-        post: post,
-        userId: userId,
-        postId: postId,
-        text: text,
-    });
     const newComment = {
         user: userId,
         text: text,

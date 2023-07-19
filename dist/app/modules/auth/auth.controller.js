@@ -30,8 +30,9 @@ const auth_service_1 = require("./auth.service");
 const config_1 = __importDefault(require("../../../config"));
 const loginUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const loginInfo = __rest(req.body, []);
+    console.log({ loginInfo });
     const result = yield auth_service_1.AuthServices.loginUser(loginInfo);
-    const { accessToken, refreshToken } = result;
+    const { accessToken, refreshToken, user } = result;
     const cookieOptions = {
         secure: config_1.default.env === 'production',
         httpOnly: true,
@@ -41,7 +42,7 @@ const loginUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void
         statusCode: 200,
         success: true,
         message: 'successfully login a user',
-        data: { accessToken },
+        data: { accessToken, user },
     });
 }));
 const refreshToken = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {

@@ -33,9 +33,17 @@ const globalMIddlewar_1 = __importDefault(require("./app/middlewar/globalMIddlew
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
-app.use((0, cors_1.default)());
 app.use((0, express_1.urlencoded)({ extended: true }));
 app.use((0, cookie_parser_1.default)());
+// app.use(cookieParser());
+// const corsOptions = {
+//   origin: [
+//     'https://book-catalog-frontend.netlify.app/',
+//     'http://localhost:3000/',
+//   ],
+//   credentials: true,
+// };
+app.use((0, cors_1.default)());
 app.get('/', (req, res) => {
     res.json('db running perfectly');
 });

@@ -57,9 +57,20 @@ const getFriends = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data: result,
     });
 }));
-const userFeedPost = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getSuggestedFriends = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _b;
     const userId = (_b = req === null || req === void 0 ? void 0 : req.user) === null || _b === void 0 ? void 0 : _b.userId;
+    const result = yield user_service_1.userServices.getSuggestedFriends(userId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: 200,
+        success: true,
+        message: 'successfully get all suggested friends',
+        data: result,
+    });
+}));
+const userFeedPost = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c;
+    const userId = (_c = req === null || req === void 0 ? void 0 : req.user) === null || _c === void 0 ? void 0 : _c.userId;
     const result = yield user_service_1.userServices.userFeedPost(userId);
     (0, sendResponse_1.default)(res, {
         statusCode: 200,
@@ -69,8 +80,19 @@ const userFeedPost = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     });
 }));
 const getSingleUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
+    var _d;
+    const id = (_d = req === null || req === void 0 ? void 0 : req.user) === null || _d === void 0 ? void 0 : _d.userId;
     const result = yield user_service_1.userServices.getSingleUser(id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: 200,
+        success: true,
+        message: 'successfully get a user',
+        data: result,
+    });
+}));
+const getSingleUserWithId = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    const result = yield user_service_1.userServices.getSingleUserWithId(userId);
     (0, sendResponse_1.default)(res, {
         statusCode: 200,
         success: true,
@@ -100,8 +122,8 @@ const updateUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
     });
 }));
 const userFollowing = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
-    const userId = (_c = req === null || req === void 0 ? void 0 : req.user) === null || _c === void 0 ? void 0 : _c.userId;
+    var _e;
+    const userId = (_e = req === null || req === void 0 ? void 0 : req.user) === null || _e === void 0 ? void 0 : _e.userId;
     const { followerId } = req.params;
     console.log({
         userId,
@@ -116,8 +138,8 @@ const userFollowing = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
     });
 }));
 const unFollowingUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _d;
-    const userId = (_d = req === null || req === void 0 ? void 0 : req.user) === null || _d === void 0 ? void 0 : _d.userId;
+    var _f;
+    const userId = (_f = req === null || req === void 0 ? void 0 : req.user) === null || _f === void 0 ? void 0 : _f.userId;
     const { followerId } = req.params;
     console.log({
         userId,
@@ -135,10 +157,12 @@ exports.userControllers = {
     createUser,
     getAllUser,
     getSingleUser,
+    getSingleUserWithId,
     deleteUser,
     updateUser,
     userFollowing,
     unFollowingUser,
     getFriends,
+    getSuggestedFriends,
     userFeedPost,
 };
