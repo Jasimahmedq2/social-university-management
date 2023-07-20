@@ -1,10 +1,16 @@
+import config from '../../../config';
 import ApiError from '../../../errors/apiErrors';
 import { IPost } from '../post/post.interfaces';
 import { Post } from '../post/post.model';
 import { IUser } from './user.interfaces';
 import { User } from './user.model';
+import bcrypt from 'bcrypt';
 
 const createUser = async (userInfo: IUser) => {
+  userInfo.password = await bcrypt.hash(
+    userInfo.password,
+    Number(config.bcrypt_hash_sold)
+  );
   userInfo.role = 'user';
   const result = await User.create(userInfo);
   return result;
@@ -97,12 +103,12 @@ const userFollowing = async (userId: string, followerId: string) => {
     throw new ApiError(404, "follower user doesn't exist");
   }
 
-  if (user?.followers?.includes(followerUser._id)) {
+  if (followerUser?.followers?.includes(user?._id)) {
     throw new ApiError(404, 'User is already being followed');
   }
 
-  user?.followers?.push(followerUser._id);
-  followerUser?.following?.push(user._id);
+  followerUser?.followers?.push(user._id);
+  user?.following?.push(followerUser._id);
 
   await user.save();
   await followerUser.save();
@@ -128,16 +134,16 @@ const unFollowingUser = async (userId: string, followerId: string) => {
     throw new ApiError(404, "follower user doesn't exist");
   }
 
-  if (!user?.followers?.includes(followerUser._id)) {
+  if (!followerUser?.followers?.includes(user._id)) {
     throw new ApiError(404, 'User is not being followed');
   }
 
-  user.followers = user.followers.filter(
-    followedUserId => followedUserId.toString() !== followerId
+  followerUser.followers = followerUser.followers.filter(
+    followedUserId => followedUserId.toString() !== userId
   );
 
-  followerUser.following = followerUser?.following?.filter(
-    followingUserId => followingUserId.toString() !== userId
+  user.following = user?.following?.filter(
+    followingUserId => followingUserId.toString() !== followerId
   );
 
   await user.save();

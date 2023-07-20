@@ -8,6 +8,7 @@ const express_1 = __importDefault(require("express"));
 const user_route_1 = require("../modules/Users/user.route");
 const auth_route_1 = require("../modules/auth/auth.route");
 const post_route_1 = require("../modules/post/post.route");
+const message_route_1 = require("../modules/message/message.route");
 const router = express_1.default.Router();
 const MainRoutes = [
     {
@@ -21,6 +22,10 @@ const MainRoutes = [
     {
         path: '/post',
         element: post_route_1.postRoutes,
+    },
+    {
+        path: '/message',
+        element: message_route_1.messageRoutes,
     },
 ];
 MainRoutes.forEach(route => router.use(route.path, route.element));

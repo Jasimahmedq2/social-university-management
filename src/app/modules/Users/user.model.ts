@@ -1,8 +1,8 @@
 import { Schema, model } from 'mongoose';
 import { IUser } from './user.interfaces';
 import { UserRoleConstant } from './user.constant';
-import bcrypt from 'bcrypt';
-import config from '../../../config';
+// import bcrypt from 'bcrypt';
+// import config from '../../../config';
 
 const UserSchema = new Schema<IUser>(
   {
@@ -51,12 +51,12 @@ const UserSchema = new Schema<IUser>(
   { timestamps: true }
 );
 
-UserSchema.pre('save', async function (next) {
-  this.password = await bcrypt.hash(
-    this.password,
-    Number(config.bcrypt_hash_sold)
-  );
-  next();
-});
+// UserSchema.pre('save', async function (next) {
+//   this.password = await bcrypt.hash(
+//     this.password,
+//     Number(config.bcrypt_hash_sold)
+//   );
+//   next();
+// });
 
 export const User = model<IUser>('user', UserSchema);

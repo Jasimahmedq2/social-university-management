@@ -31,19 +31,43 @@ const cors_1 = __importDefault(require("cors"));
 const route_1 = require("./app/route");
 const globalMIddlewar_1 = __importDefault(require("./app/middlewar/globalMIddlewar"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+// import http from 'http';
+// import socketio from 'socket.io';
+// import { Message } from './app/modules/message/message.model';
 const app = (0, express_1.default)();
+// const server = http.createServer(app);
+// const io = socketio(server, {
+//   cors: {
+//     origin: '*',
+//   },
+// });
 app.use(express_1.default.json());
 app.use((0, express_1.urlencoded)({ extended: true }));
 app.use((0, cookie_parser_1.default)());
 // app.use(cookieParser());
-// const corsOptions = {
-//   origin: [
-//     'https://book-catalog-frontend.netlify.app/',
-//     'http://localhost:3000/',
-//   ],
-//   credentials: true,
-// };
-app.use((0, cors_1.default)());
+const corsOptions = {
+    origin: [
+        'https://book-catalog-frontend.netlify.app',
+        'http://localhost:3000',
+    ],
+    credentials: true,
+};
+// socket io
+// io.on('connection', socket => {
+//   console.log('New client connected:', socket.id);
+//   socket.on('joinRoom', (roomId: any) => {
+//     socket.join(roomId);
+//   });
+//   socket.on('sendMessage', async (message: { roomId: any }) => {
+//     const newMessage = new Message(message);
+//     await newMessage.save();
+//     io.to(message.roomId).emit('message', newMessage);
+//   });
+//   socket.on('disconnect', () => {
+//     console.log('Client disconnected:', socket.id);
+//   });
+// });
+app.use((0, cors_1.default)(corsOptions));
 app.get('/', (req, res) => {
     res.json('db running perfectly');
 });
