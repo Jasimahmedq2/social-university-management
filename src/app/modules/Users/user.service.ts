@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import config from '../../../config';
 import ApiError from '../../../errors/apiErrors';
 import { IPost } from '../post/post.interfaces';
@@ -16,8 +17,10 @@ const createUser = async (userInfo: IUser) => {
   return result;
 };
 
-const getAllUser = async (): Promise<IUser[]> => {
-  const result = await User.find({});
+const getAllUser = async (userId: Types.ObjectId): Promise<IUser[]> => {
+  const result = await User.find({ _id: { $ne: userId } }).sort({
+    updatedAt: -1,
+  });
   return result;
 };
 const getFriends = async (userId: string): Promise<IUser[] | IUser | null> => {

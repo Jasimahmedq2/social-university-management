@@ -9,6 +9,8 @@ export default {
   default_pass: process.env.ADMIN_PASS,
   env: process.env.NODE_ENV,
   bcrypt_hash_sold: process.env.BCRYPT_HASH_SOLD,
+  my_email: process.env.MY_EMAIL,
+  my_password: process.env.MY_PASSWORD,
   jwt: {
     access_secret: process.env.ACCESS_SECRET,
     access_expire: process.env.ACCESS_EXPIRE,

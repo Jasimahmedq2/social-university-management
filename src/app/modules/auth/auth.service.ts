@@ -9,6 +9,8 @@ import {
   IRefreshResponse,
 } from './auth.interfaces';
 import bcrypt from 'bcrypt';
+import nodemailer from 'nodemailer';
+import { v4 as uuidv4 } from 'uuid';
 
 const loginUser = async (loginInfo: ILoginInfo): Promise<ILoginResponse> => {
   const { email, password } = loginInfo;
@@ -82,7 +84,53 @@ const refreshToken = async (
   };
 };
 
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: config.my_email,
+    pass: config.my_password,
+  },
+});
+
+const resetPasswordRequest = async (email: string) => {
+  console.log({
+    userEmail: email,
+    myEmail: config.my_email,
+    myPassword: config.my_password,
+  });
+  const user = await User.findOne({ email: email });
+
+  if (!user) {
+    throw new ApiError(404, "user doesn't exist");
+  }
+
+  const resetToken = uuidv4();
+  const resetTokenExpiration = new Date();
+  resetTokenExpiration.setHours(resetTokenExpiration.getHours() + 1);
+
+  // Save reset token and expiration time to the user
+  user.resetToken = resetToken;
+  user.resetTokenExpiration = resetTokenExpiration;
+  await user.save();
+
+  const resetUrl = `https://book-catalog-frontend.netlify.app/reset-password/${resetToken}`;
+  const mailOptions = {
+    from: 'jasim.dev48@gmail.com',
+    to: email,
+    subject: 'Reset Password',
+    html: `<p>You are receiving this email because you (or someone else) have requested the reset of the password for your account.</p>
+    <p>Please click on the following link to reset your password:</p>
+    <a href="${resetUrl}">Reset Password</a>
+    <p>If you did not request this, please ignore this email, and your password will remain unchanged.</p>`,
+  };
+
+  // Send the email
+  const result = await transporter.sendMail(mailOptions);
+  return result;
+};
+
 export const AuthServices = {
   loginUser,
   refreshToken,
+  resetPasswordRequest,
 };

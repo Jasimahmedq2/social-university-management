@@ -14,5 +14,6 @@ router.post(
   validateRequest(AuthValidation.refreshTokenZodSchema),
   AuthControllers.refreshToken
 );
+router.post('/reset-password-request', AuthControllers.resetPasswordRequest);
 
 export const authRoutes = router;

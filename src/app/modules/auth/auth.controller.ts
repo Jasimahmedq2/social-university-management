@@ -44,7 +44,19 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const resetPasswordRequest = catchAsync(async (req: Request, res: Response) => {
+  const { email } = req.body;
+  const result = await AuthServices.resetPasswordRequest(email);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'successfully send a request',
+    data: result,
+  });
+});
 export const AuthControllers = {
   loginUser,
   refreshToken,
+  resetPasswordRequest,
 };

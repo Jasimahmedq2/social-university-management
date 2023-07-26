@@ -12,7 +12,7 @@ router.post(
   validateRequest(userZodValidation.createUserZodSchema),
   userControllers.createUser
 );
-router.get('/get-users', userControllers.getAllUser);
+router.get('/get-users', auth('user'), userControllers.getAllUser);
 router.get('/get-friends', auth(UserRole.USER), userControllers.getFriends);
 router.get(
   '/get-suggestedFriends',

@@ -14,4 +14,6 @@ export type IUser = {
   bio?: string;
   followers?: Types.ObjectId[];
   following?: Types.ObjectId[];
+  resetToken?: string;
+  resetTokenExpiration?: Date;
 };

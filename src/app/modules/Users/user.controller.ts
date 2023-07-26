@@ -15,7 +15,9 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllUser = catchAsync(async (req: Request, res: Response) => {
-  const result = await userServices.getAllUser();
+  const user = req?.user;
+  const userId = user?.userId;
+  const result = await userServices.getAllUser(userId);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -66,7 +68,7 @@ const getSingleUser = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getSingleUserWithId = catchAsync(async (req: Request, res: Response) => {
-  const {userId} = req.params;
+  const { userId } = req.params;
   const result = await userServices.getSingleUserWithId(userId);
   sendResponse(res, {
     statusCode: 200,

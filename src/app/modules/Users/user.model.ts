@@ -47,6 +47,14 @@ const UserSchema = new Schema<IUser>(
       type: [{ type: Schema.Types.ObjectId, ref: 'user' }],
       default: [],
     },
+    resetToken: {
+      type: String,
+      default: null,
+    },
+    resetTokenExpiration: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );
