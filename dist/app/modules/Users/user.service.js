@@ -24,8 +24,10 @@ const createUser = (userInfo) => __awaiter(void 0, void 0, void 0, function* () 
     const result = yield user_model_1.User.create(userInfo);
     return result;
 });
-const getAllUser = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield user_model_1.User.find({});
+const getAllUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield user_model_1.User.find({ _id: { $ne: userId } }).sort({
+        updatedAt: -1,
+    });
     return result;
 });
 const getFriends = (userId) => __awaiter(void 0, void 0, void 0, function* () {

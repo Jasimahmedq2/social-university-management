@@ -93,11 +93,6 @@ const transporter = nodemailer.createTransport({
 });
 
 const resetPasswordRequest = async (email: string) => {
-  console.log({
-    userEmail: email,
-    myEmail: config.my_email,
-    myPassword: config.my_password,
-  });
   const user = await User.findOne({ email: email });
 
   if (!user) {
@@ -113,7 +108,7 @@ const resetPasswordRequest = async (email: string) => {
   user.resetTokenExpiration = resetTokenExpiration;
   await user.save();
 
-  const resetUrl = `https://book-catalog-frontend.netlify.app/reset-password/${resetToken}`;
+  const resetUrl = `http://localhost:3000/set-password/${resetToken}`;
   const mailOptions = {
     from: 'jasim.dev48@gmail.com',
     to: email,
@@ -129,8 +124,45 @@ const resetPasswordRequest = async (email: string) => {
   return result;
 };
 
+const resetPassword = async (payload: {
+  resetToken: string;
+  password: string;
+}) => {
+  const { resetToken, password } = payload;
+  console.log({ payload });
+  try {
+    const user = await User.findOne({
+      resetToken: resetToken,
+      resetTokenExpiration: { $gt: new Date() },
+    });
+    console.log({ user });
+
+    if (!user) {
+      throw new ApiError(404, 'Invalid or expired reset token');
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(
+      password,
+      Number(config.bcrypt_hash_sold)
+    );
+
+    console.log({ hashedPassword });
+
+    // Update the user's password and reset token fields
+    user.password = hashedPassword;
+    user.resetToken = null;
+    user.resetTokenExpiration = null;
+    const result = await user.save();
+    return result;
+  } catch (error) {
+    console.log({ error });
+  }
+};
+
 export const AuthServices = {
   loginUser,
   refreshToken,
   resetPasswordRequest,
+  resetPassword,
 };

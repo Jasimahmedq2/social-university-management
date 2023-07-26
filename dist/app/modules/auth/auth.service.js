@@ -18,6 +18,8 @@ const apiErrors_1 = __importDefault(require("../../../errors/apiErrors"));
 const jwtHelpers_1 = require("../../../helpers/jwtHelpers");
 const user_model_1 = require("../Users/user.model");
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const nodemailer_1 = __importDefault(require("nodemailer"));
+const uuid_1 = require("uuid");
 const loginUser = (loginInfo) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = loginInfo;
     const isUserExist = yield user_model_1.User.findOne({ email: email });
@@ -66,7 +68,46 @@ const refreshToken = (refreshToken) => __awaiter(void 0, void 0, void 0, functio
         accessToken: newAccessToken,
     };
 });
+const transporter = nodemailer_1.default.createTransport({
+    service: 'gmail',
+    auth: {
+        user: config_1.default.my_email,
+        pass: config_1.default.my_password,
+    },
+});
+const resetPasswordRequest = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log({
+        userEmail: email,
+        myEmail: config_1.default.my_email,
+        myPassword: config_1.default.my_password,
+    });
+    const user = yield user_model_1.User.findOne({ email: email });
+    if (!user) {
+        throw new apiErrors_1.default(404, "user doesn't exist");
+    }
+    const resetToken = (0, uuid_1.v4)();
+    const resetTokenExpiration = new Date();
+    resetTokenExpiration.setHours(resetTokenExpiration.getHours() + 1);
+    // Save reset token and expiration time to the user
+    user.resetToken = resetToken;
+    user.resetTokenExpiration = resetTokenExpiration;
+    yield user.save();
+    const resetUrl = `https://book-catalog-frontend.netlify.app/reset-password/${resetToken}`;
+    const mailOptions = {
+        from: 'jasim.dev48@gmail.com',
+        to: email,
+        subject: 'Reset Password',
+        html: `<p>You are receiving this email because you (or someone else) have requested the reset of the password for your account.</p>
+    <p>Please click on the following link to reset your password:</p>
+    <a href="${resetUrl}">Reset Password</a>
+    <p>If you did not request this, please ignore this email, and your password will remain unchanged.</p>`,
+    };
+    // Send the email
+    const result = yield transporter.sendMail(mailOptions);
+    return result;
+});
 exports.AuthServices = {
     loginUser,
     refreshToken,
+    resetPasswordRequest,
 };

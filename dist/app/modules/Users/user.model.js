@@ -46,6 +46,14 @@ const UserSchema = new mongoose_1.Schema({
         type: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'user' }],
         default: [],
     },
+    resetToken: {
+        type: String,
+        default: null,
+    },
+    resetTokenExpiration: {
+        type: Date,
+        default: null,
+    },
 }, { timestamps: true });
 // UserSchema.pre('save', async function (next) {
 //   this.password = await bcrypt.hash(

@@ -60,7 +60,18 @@ const refreshToken = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
         data: result,
     });
 }));
+const resetPasswordRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email } = req.body;
+    const result = yield auth_service_1.AuthServices.resetPasswordRequest(email);
+    (0, sendResponse_1.default)(res, {
+        statusCode: 200,
+        success: true,
+        message: 'successfully send a request',
+        data: result,
+    });
+}));
 exports.AuthControllers = {
     loginUser,
     refreshToken,
+    resetPasswordRequest,
 };

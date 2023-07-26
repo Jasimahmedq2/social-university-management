@@ -38,7 +38,9 @@ const createUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
     });
 }));
 const getAllUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield user_service_1.userServices.getAllUser();
+    const user = req === null || req === void 0 ? void 0 : req.user;
+    const userId = user === null || user === void 0 ? void 0 : user.userId;
+    const result = yield user_service_1.userServices.getAllUser(userId);
     (0, sendResponse_1.default)(res, {
         statusCode: 200,
         success: true,

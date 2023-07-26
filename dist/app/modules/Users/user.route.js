@@ -12,7 +12,7 @@ const auth_1 = __importDefault(require("../../middlewar/auth"));
 const enums_1 = require("../../../enums/enums");
 const router = express_1.default.Router();
 router.post('/create-user', (0, validateRequest_1.default)(user_validation_1.userZodValidation.createUserZodSchema), user_controller_1.userControllers.createUser);
-router.get('/get-users', user_controller_1.userControllers.getAllUser);
+router.get('/get-users', (0, auth_1.default)('user'), user_controller_1.userControllers.getAllUser);
 router.get('/get-friends', (0, auth_1.default)(enums_1.UserRole.USER), user_controller_1.userControllers.getFriends);
 router.get('/get-suggestedFriends', (0, auth_1.default)(enums_1.UserRole.USER), user_controller_1.userControllers.getSuggestedFriends);
 router.get('/get-feed', (0, auth_1.default)(enums_1.UserRole.USER), user_controller_1.userControllers.userFeedPost);
