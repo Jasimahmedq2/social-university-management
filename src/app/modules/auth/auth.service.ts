@@ -108,7 +108,7 @@ const resetPasswordRequest = async (email: string) => {
   user.resetTokenExpiration = resetTokenExpiration;
   await user.save();
 
-  const resetUrl = `http://localhost:3000/set-password/${resetToken}`;
+  const resetUrl = `https://book-catalog-frontend.netlify.app/set-password/${resetToken}`;
   const mailOptions = {
     from: 'jasim.dev48@gmail.com',
     to: email,

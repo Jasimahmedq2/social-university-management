@@ -3,11 +3,21 @@ import { IPost } from './post.interfaces';
 import { Post } from './post.model';
 import ApiError from '../../../errors/apiErrors';
 
-const cratePost = async (id: Types.ObjectId, payload: IPost) => {
+const cratePost = async (
+  id: Types.ObjectId,
+  images: string[],
+  videos: string[],
+  audios: string[],
+  payload: IPost
+) => {
   payload.user = id;
+  payload.images = images;
+  payload.videos = videos;
+  payload.audios = audios;
   const result = await Post.create(payload);
   return result;
 };
+
 const getAllPost = async (): Promise<IPost[]> => {
   const result = await Post.find({})
     .populate('user')
@@ -16,9 +26,10 @@ const getAllPost = async (): Promise<IPost[]> => {
   return result;
 };
 const getUserAllPost = async (userId: string): Promise<IPost[]> => {
-  const result = await Post.find({ user: userId })    .populate('user')
-  .populate('comments.user')
-  .sort({ createdAt: -1 });
+  const result = await Post.find({ user: userId })
+    .populate('user')
+    .populate('comments.user')
+    .sort({ createdAt: -1 });
   return result;
 };
 const getSinglePost = async (postId: string): Promise<IPost | null> => {
@@ -37,7 +48,6 @@ const createCommentToPost = async (
   if (!post) {
     throw new ApiError(404, "post doesn't exist");
   }
-
 
   const newComment = {
     user: userId,

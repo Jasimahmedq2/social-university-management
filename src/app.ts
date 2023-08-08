@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import express, {
   Application,
   NextFunction,
@@ -9,6 +10,8 @@ import cors from 'cors';
 import { MainRouter } from './app/route';
 import globalMiddleware from './app/middlewar/globalMIddlewar';
 import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
+
 // import http from 'http';
 // import socketio from 'socket.io';
 // import { Message } from './app/modules/message/message.model';
@@ -23,6 +26,8 @@ const app: Application = express();
 
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use('/uploads/', express.static('uploads'));
 app.use(cookieParser());
 // app.use(cookieParser());
 const corsOptions = {
@@ -73,7 +78,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
       },
     ],
   });
-  next();
 });
 
 export default app;

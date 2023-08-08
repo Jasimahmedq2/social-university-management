@@ -12,4 +12,5 @@ const router = express_1.default.Router();
 router.post('/login', (0, validateRequest_1.default)(auth_validation_1.AuthValidation.loginValidationZodSchema), auth_controller_1.AuthControllers.loginUser);
 router.post('/refresh-token', (0, validateRequest_1.default)(auth_validation_1.AuthValidation.refreshTokenZodSchema), auth_controller_1.AuthControllers.refreshToken);
 router.post('/reset-password-request', auth_controller_1.AuthControllers.resetPasswordRequest);
+router.post('/reset-password', auth_controller_1.AuthControllers.resetPassword);
 exports.authRoutes = router;

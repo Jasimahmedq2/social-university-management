@@ -76,11 +76,6 @@ const transporter = nodemailer_1.default.createTransport({
     },
 });
 const resetPasswordRequest = (email) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log({
-        userEmail: email,
-        myEmail: config_1.default.my_email,
-        myPassword: config_1.default.my_password,
-    });
     const user = yield user_model_1.User.findOne({ email: email });
     if (!user) {
         throw new apiErrors_1.default(404, "user doesn't exist");
@@ -92,7 +87,7 @@ const resetPasswordRequest = (email) => __awaiter(void 0, void 0, void 0, functi
     user.resetToken = resetToken;
     user.resetTokenExpiration = resetTokenExpiration;
     yield user.save();
-    const resetUrl = `https://book-catalog-frontend.netlify.app/reset-password/${resetToken}`;
+    const resetUrl = `https://book-catalog-frontend.netlify.app/set-password/${resetToken}`;
     const mailOptions = {
         from: 'jasim.dev48@gmail.com',
         to: email,
@@ -106,8 +101,35 @@ const resetPasswordRequest = (email) => __awaiter(void 0, void 0, void 0, functi
     const result = yield transporter.sendMail(mailOptions);
     return result;
 });
+const resetPassword = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const { resetToken, password } = payload;
+    console.log({ payload });
+    try {
+        const user = yield user_model_1.User.findOne({
+            resetToken: resetToken,
+            resetTokenExpiration: { $gt: new Date() },
+        });
+        console.log({ user });
+        if (!user) {
+            throw new apiErrors_1.default(404, 'Invalid or expired reset token');
+        }
+        // Hash the new password
+        const hashedPassword = yield bcrypt_1.default.hash(password, Number(config_1.default.bcrypt_hash_sold));
+        console.log({ hashedPassword });
+        // Update the user's password and reset token fields
+        user.password = hashedPassword;
+        user.resetToken = null;
+        user.resetTokenExpiration = null;
+        const result = yield user.save();
+        return result;
+    }
+    catch (error) {
+        console.log({ error });
+    }
+});
 exports.AuthServices = {
     loginUser,
     refreshToken,
     resetPasswordRequest,
+    resetPassword,
 };

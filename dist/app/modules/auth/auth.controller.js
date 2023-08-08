@@ -62,6 +62,7 @@ const refreshToken = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
 }));
 const resetPasswordRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email } = req.body;
+    console.log({ email: email });
     const result = yield auth_service_1.AuthServices.resetPasswordRequest(email);
     (0, sendResponse_1.default)(res, {
         statusCode: 200,
@@ -70,8 +71,19 @@ const resetPasswordRequest = (0, catchAsync_1.default)((req, res) => __awaiter(v
         data: result,
     });
 }));
+const resetPassword = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const resetInfo = __rest(req.body, []);
+    const result = yield auth_service_1.AuthServices.resetPassword(resetInfo);
+    (0, sendResponse_1.default)(res, {
+        statusCode: 200,
+        success: true,
+        message: 'successfully reset password',
+        data: result,
+    });
+}));
 exports.AuthControllers = {
     loginUser,
     refreshToken,
     resetPasswordRequest,
+    resetPassword,
 };
