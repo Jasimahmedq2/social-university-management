@@ -27,7 +27,7 @@ const app: Application = express();
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use('/uploads/', express.static('uploads'));
+app.use('/src/uploads/', express.static('src/uploads'));
 app.use(cookieParser());
 // app.use(cookieParser());
 const corsOptions = {

@@ -4,6 +4,16 @@ import sendResponse from '../../../shared/sendResponse';
 import { AuthServices } from './auth.service';
 import config from '../../../config';
 
+const createUser = catchAsync(async (req: Request, res: Response) => {
+  const result = await AuthServices.createUser(req.body);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'successfully created a user',
+    data: result,
+  });
+});
+
 const loginUser = catchAsync(async (req: Request, res: Response) => {
   const { ...loginInfo } = req.body;
   console.log({ loginInfo });
@@ -23,6 +33,21 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
     data: { accessToken, user },
   });
 });
+
+const verifyEmailAndUpdateStatus = catchAsync(
+  async (req: Request, res: Response) => {
+    const { token } = req.params;
+    // const token = (req as any).headers.authorization.split(" ")[1];
+    console.log({ token });
+    const result = await AuthServices.verifyEmailAndUpdateStatus(token);
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: 'the user is verified!',
+      data: result,
+    });
+  }
+);
 
 const refreshToken = catchAsync(async (req: Request, res: Response) => {
   const { refreshToken } = req.cookies;
@@ -69,8 +94,10 @@ const resetPassword = catchAsync(async (req: Request, res: Response) => {
   });
 });
 export const AuthControllers = {
+  createUser,
   loginUser,
   refreshToken,
   resetPasswordRequest,
   resetPassword,
+  verifyEmailAndUpdateStatus,
 };

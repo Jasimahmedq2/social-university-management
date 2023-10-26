@@ -8,9 +8,21 @@ const PostSchema = new mongoose_1.Schema({
         ref: 'user',
         required: true,
     },
-    image: {
-        type: String,
-    },
+    images: [
+        {
+            type: String,
+        },
+    ],
+    videos: [
+        {
+            type: String,
+        },
+    ],
+    audios: [
+        {
+            type: String,
+        },
+    ],
     caption: {
         type: String,
     },
@@ -39,9 +51,12 @@ const PostSchema = new mongoose_1.Schema({
     },
 }, { timestamps: true });
 PostSchema.pre('save', function (next) {
-    const { image, caption } = this;
-    if (!image && !caption) {
-        throw new Error('Either the image or caption field must be provided.');
+    const { images, videos, audios, caption } = this;
+    if ((!images || images.length === 0) &&
+        (!videos || videos.length === 0) &&
+        (!audios || audios.length === 0) &&
+        !caption) {
+        throw new Error('Either the images, videos, audios, or caption field must be provided.');
     }
     next();
 });

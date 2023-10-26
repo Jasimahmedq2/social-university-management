@@ -13,6 +13,7 @@ export type ILoginResponse = {
       firstName?: string;
       lastName?: string;
     };
+    profilePic?: string;
   };
 };
 export type IRefreshResponse = {

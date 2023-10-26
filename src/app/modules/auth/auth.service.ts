@@ -11,12 +11,76 @@ import {
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 import { v4 as uuidv4 } from 'uuid';
+import { IUser } from '../Users/user.interfaces';
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: config.my_email,
+    pass: config.my_password,
+  },
+});
+
+const createUser = async (payload: IUser) => {
+  payload.password = await bcrypt.hash(
+    payload.password,
+    Number(config.bcrypt_hash_sold)
+  );
+  payload.role = 'user';
+
+  const createSecret = await jwtHelpers.createToken(
+    { email: payload.email },
+    config.jwt.access_secret as Secret,
+    config.jwt.access_expire as string
+  );
+
+  const isExistUser = await User.findOne({
+    email: payload.email,
+  });
+
+  if (isExistUser && isExistUser.isVerified) {
+    throw new ApiError(400, 'already you have a account please login');
+  } else if (isExistUser) {
+    const mailOptions = {
+      from: config.my_email,
+      to: payload.email,
+      subject: 'verify your email',
+      html: `
+    <P>Hello there, please verify your email</p>
+    <a href="http://localhost:3000/verify/${createSecret}/" target="_blank">Click here to verify your email</a>`,
+    };
+    const result = await transporter.sendMail(mailOptions);
+
+    return result;
+  } else {
+    await User.create(payload);
+
+    const mailOptions = {
+      from: config.my_email,
+      to: payload.email,
+      subject: 'verify your email',
+      html: `
+    <P>Hello there, please verify your email</p>
+    <a href="http://localhost:3000/verify/${createSecret}/" target="_blank">Click here to verify your email</a>`,
+    };
+    const result = await transporter.sendMail(mailOptions);
+    console.log({ createSecret });
+
+    return result;
+  }
+};
 
 const loginUser = async (loginInfo: ILoginInfo): Promise<ILoginResponse> => {
   const { email, password } = loginInfo;
   const isUserExist = await User.findOne({ email: email });
   if (!isUserExist) {
     throw new ApiError(404, "user doesn't exist");
+  }
+  if (!isUserExist.isVerified) {
+    throw new ApiError(
+      401,
+      'please verify your email first, then try to login'
+    );
   }
   const comparePass = await bcrypt.compare(password, isUserExist.password);
   if (!comparePass) {
@@ -50,8 +114,32 @@ const loginUser = async (loginInfo: ILoginInfo): Promise<ILoginResponse> => {
       userId: isUserExist?._id.toString(),
       email: isUserExist?.email,
       name: isUserExist?.name,
+      profilePic: isUserExist?.profilePic,
     },
   };
+};
+
+const verifyEmailAndUpdateStatus = async (token: string) => {
+  const verifyToken = jwtHelpers.verifyToken(
+    token,
+    config.jwt.access_secret as Secret
+  );
+
+  if (!verifyToken || !verifyToken.email) {
+    throw new ApiError(
+      401,
+      'maybe your verification time is expired, please try again'
+    );
+  }
+
+  const email = verifyToken.email;
+
+  const result = await User.findOneAndUpdate(
+    { email },
+    { $set: { isVerified: true } }
+  );
+
+  return result;
 };
 
 const refreshToken = async (
@@ -83,14 +171,6 @@ const refreshToken = async (
     accessToken: newAccessToken,
   };
 };
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: config.my_email,
-    pass: config.my_password,
-  },
-});
 
 const resetPasswordRequest = async (email: string) => {
   const user = await User.findOne({ email: email });
@@ -161,8 +241,10 @@ const resetPassword = async (payload: {
 };
 
 export const AuthServices = {
+  createUser,
   loginUser,
   refreshToken,
   resetPasswordRequest,
   resetPassword,
+  verifyEmailAndUpdateStatus,
 };

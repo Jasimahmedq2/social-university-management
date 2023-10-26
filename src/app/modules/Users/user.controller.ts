@@ -3,16 +3,16 @@ import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { userServices } from './user.service';
 
-const createUser = catchAsync(async (req: Request, res: Response) => {
-  const { ...userInfo } = req.body;
-  const result = await userServices.createUser(userInfo);
-  sendResponse(res, {
-    statusCode: 200,
-    success: true,
-    message: 'successfully created an user',
-    data: result,
-  });
-});
+// const createUser = catchAsync(async (req: Request, res: Response) => {
+//   const { ...userInfo } = req.body;
+//   const result = await userServices.createUser(userInfo);
+//   sendResponse(res, {
+//     statusCode: 200,
+//     success: true,
+//     message: 'successfully created an user',
+//     data: result,
+//   });
+// });
 
 const getAllUser = catchAsync(async (req: Request, res: Response) => {
   const user = req?.user;
@@ -137,7 +137,6 @@ const unFollowingUser = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const userControllers = {
-  createUser,
   getAllUser,
   getSingleUser,
   getSingleUserWithId,

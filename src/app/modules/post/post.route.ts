@@ -4,19 +4,12 @@ import { UserRole } from '../../../enums/enums';
 import validateRequest from '../../middlewar/validateRequest';
 import { PostValidation } from './post.validation';
 import { PostControllers } from './post.controller';
-import upload from '../../middlewar/multer';
-
 const router = express.Router();
 
 router.post(
   '/create-post',
   auth(UserRole.USER),
   validateRequest(PostValidation.createPostZodSchema),
-  upload.fields([
-    { name: 'images', maxCount: 5 },
-    { name: 'videos', maxCount: 5 },
-    { name: 'audios', maxCount: 5 },
-  ]),
   PostControllers.createPost
 );
 router.get('/get-posts', auth(UserRole.USER), PostControllers.getAllPost);

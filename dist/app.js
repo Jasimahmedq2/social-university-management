@@ -26,11 +26,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const express_1 = __importStar(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const route_1 = require("./app/route");
 const globalMIddlewar_1 = __importDefault(require("./app/middlewar/globalMIddlewar"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const body_parser_1 = __importDefault(require("body-parser"));
 // import http from 'http';
 // import socketio from 'socket.io';
 // import { Message } from './app/modules/message/message.model';
@@ -43,6 +45,8 @@ const app = (0, express_1.default)();
 // });
 app.use(express_1.default.json());
 app.use((0, express_1.urlencoded)({ extended: true }));
+app.use(body_parser_1.default.json());
+app.use('/src/uploads/', express_1.default.static('src/uploads'));
 app.use((0, cookie_parser_1.default)());
 // app.use(cookieParser());
 const corsOptions = {
@@ -85,6 +89,5 @@ app.use((req, res, next) => {
             },
         ],
     });
-    next();
 });
 exports.default = app;

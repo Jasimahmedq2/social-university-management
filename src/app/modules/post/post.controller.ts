@@ -4,24 +4,13 @@ import catchAsync from '../../../shared/catchAsync';
 import { PostServices } from './post.service';
 import sendResponse from '../../../shared/sendResponse';
 
-interface Files {
-  [fieldname: string]: Express.Multer.File[];
-}
-
 const createPost = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
   const userId = user?.userId;
 
-  const { images, videos, audios } = req.files as Files;
   const { ...postInfo } = req.body;
-  console.log({ infoData: req.files });
-  const result = await PostServices.cratePost(
-    userId,
-    images?.map(file => file.path),
-    videos?.map(file => file.path),
-    audios?.map(file => file.path),
-    postInfo
-  );
+
+  const result = await PostServices.cratePost(userId, postInfo);
 
   sendResponse(res, {
     statusCode: 200,

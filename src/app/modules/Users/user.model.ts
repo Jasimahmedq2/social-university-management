@@ -47,6 +47,10 @@ const UserSchema = new Schema<IUser>(
       type: [{ type: Schema.Types.ObjectId, ref: 'user' }],
       default: [],
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
     resetToken: {
       type: String,
       default: null,

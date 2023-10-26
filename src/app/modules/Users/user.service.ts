@@ -1,21 +1,19 @@
 import { Types } from 'mongoose';
-import config from '../../../config';
 import ApiError from '../../../errors/apiErrors';
 import { IPost } from '../post/post.interfaces';
 import { Post } from '../post/post.model';
 import { IUser } from './user.interfaces';
 import { User } from './user.model';
-import bcrypt from 'bcrypt';
 
-const createUser = async (userInfo: IUser) => {
-  userInfo.password = await bcrypt.hash(
-    userInfo.password,
-    Number(config.bcrypt_hash_sold)
-  );
-  userInfo.role = 'user';
-  const result = await User.create(userInfo);
-  return result;
-};
+// const createUser = async (userInfo: IUser) => {
+//   userInfo.password = await bcrypt.hash(
+//     userInfo.password,
+//     Number(config.bcrypt_hash_sold)
+//   );
+//   userInfo.role = 'user';
+//   const result = await User.create(userInfo);
+//   return result;
+// };
 
 const getAllUser = async (userId: Types.ObjectId): Promise<IUser[]> => {
   const result = await User.find({ _id: { $ne: userId } }).sort({
@@ -158,7 +156,6 @@ const unFollowingUser = async (userId: string, followerId: string) => {
 };
 
 export const userServices = {
-  createUser,
   getAllUser,
   getSingleUser,
   getSingleUserWithId,

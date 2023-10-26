@@ -3,17 +3,8 @@ import { IPost } from './post.interfaces';
 import { Post } from './post.model';
 import ApiError from '../../../errors/apiErrors';
 
-const cratePost = async (
-  id: Types.ObjectId,
-  images: string[],
-  videos: string[],
-  audios: string[],
-  payload: IPost
-) => {
+const cratePost = async (id: Types.ObjectId, payload: IPost) => {
   payload.user = id;
-  payload.images = images;
-  payload.videos = videos;
-  payload.audios = audios;
   const result = await Post.create(payload);
   return result;
 };

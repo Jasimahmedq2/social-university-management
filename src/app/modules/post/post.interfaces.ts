@@ -2,9 +2,7 @@ import { Types } from 'mongoose';
 
 export type IPost = {
   user: Types.ObjectId;
-  images?: string[];
-  videos?: string[];
-  audios?: string[];
+  image?: string;
   caption: string;
   likes: Types.ObjectId[];
   comments: {

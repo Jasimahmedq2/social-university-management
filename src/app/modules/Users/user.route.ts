@@ -7,11 +7,11 @@ import { UserRole } from '../../../enums/enums';
 
 const router = express.Router();
 
-router.post(
-  '/create-user',
-  validateRequest(userZodValidation.createUserZodSchema),
-  userControllers.createUser
-);
+// router.post(
+//   '/create-user',
+//   validateRequest(userZodValidation.createUserZodSchema),
+//   userControllers.createUser
+// );
 router.get('/get-users', auth('user'), userControllers.getAllUser);
 router.get('/get-friends', auth(UserRole.USER), userControllers.getFriends);
 router.get(
