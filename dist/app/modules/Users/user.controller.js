@@ -27,16 +27,16 @@ exports.userControllers = void 0;
 const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const user_service_1 = require("./user.service");
-const createUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userInfo = __rest(req.body, []);
-    const result = yield user_service_1.userServices.createUser(userInfo);
-    (0, sendResponse_1.default)(res, {
-        statusCode: 200,
-        success: true,
-        message: 'successfully created an user',
-        data: result,
-    });
-}));
+// const createUser = catchAsync(async (req: Request, res: Response) => {
+//   const { ...userInfo } = req.body;
+//   const result = await userServices.createUser(userInfo);
+//   sendResponse(res, {
+//     statusCode: 200,
+//     success: true,
+//     message: 'successfully created an user',
+//     data: result,
+//   });
+// });
 const getAllUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req === null || req === void 0 ? void 0 : req.user;
     const userId = user === null || user === void 0 ? void 0 : user.userId;
@@ -156,7 +156,6 @@ const unFollowingUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0
     });
 }));
 exports.userControllers = {
-    createUser,
     getAllUser,
     getSingleUser,
     getSingleUserWithId,

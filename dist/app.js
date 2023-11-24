@@ -51,7 +51,7 @@ app.use((0, cookie_parser_1.default)());
 // app.use(cookieParser());
 const corsOptions = {
     origin: [
-        'https://book-catalog-frontend.netlify.app',
+        'https://nextgen-social-media.netlify.app',
         'http://localhost:3000',
     ],
     credentials: true,

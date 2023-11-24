@@ -30,10 +30,8 @@ const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const createPost = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     const userId = user === null || user === void 0 ? void 0 : user.userId;
-    const { images, videos, audios } = req.files;
     const postInfo = __rest(req.body, []);
-    console.log({ infoData: req.files });
-    const result = yield post_service_1.PostServices.cratePost(userId, images === null || images === void 0 ? void 0 : images.map(file => file.path), videos === null || videos === void 0 ? void 0 : videos.map(file => file.path), audios === null || audios === void 0 ? void 0 : audios.map(file => file.path), postInfo);
+    const result = yield post_service_1.PostServices.cratePost(userId, postInfo);
     (0, sendResponse_1.default)(res, {
         statusCode: 200,
         success: true,

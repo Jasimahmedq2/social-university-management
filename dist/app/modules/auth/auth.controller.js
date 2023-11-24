@@ -28,6 +28,15 @@ const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const auth_service_1 = require("./auth.service");
 const config_1 = __importDefault(require("../../../config"));
+const createUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield auth_service_1.AuthServices.createUser(req.body);
+    (0, sendResponse_1.default)(res, {
+        statusCode: 200,
+        success: true,
+        message: 'successfully created a user',
+        data: result,
+    });
+}));
 const loginUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const loginInfo = __rest(req.body, []);
     console.log({ loginInfo });
@@ -43,6 +52,18 @@ const loginUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void
         success: true,
         message: 'successfully login a user',
         data: { accessToken, user },
+    });
+}));
+const verifyEmailAndUpdateStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { token } = req.params;
+    // const token = (req as any).headers.authorization.split(" ")[1];
+    console.log({ token });
+    const result = yield auth_service_1.AuthServices.verifyEmailAndUpdateStatus(token);
+    (0, sendResponse_1.default)(res, {
+        statusCode: 200,
+        success: true,
+        message: 'the user is verified!',
+        data: result,
     });
 }));
 const refreshToken = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -82,8 +103,10 @@ const resetPassword = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
     });
 }));
 exports.AuthControllers = {
+    createUser,
     loginUser,
     refreshToken,
     resetPasswordRequest,
     resetPassword,
+    verifyEmailAndUpdateStatus,
 };

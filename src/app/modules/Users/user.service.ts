@@ -34,14 +34,15 @@ const getSuggestedFriends = async (
   userId: string
 ): Promise<IUser[] | IUser | null> => {
   const currentUser = await User.findById(userId);
-  const currentFriends = currentUser?.followers;
+  const currentFriends = currentUser?.followers ?? [];
+  const currentFollowing = currentUser?.following ?? [];
 
   let result;
 
   if (currentFriends) {
     result = await User.find(
       {
-        _id: { $nin: [...currentFriends, userId] },
+        _id: { $nin: [...currentFriends, ...currentFollowing, userId] },
       },
       { name: 1, profilePic: 1 }
     );

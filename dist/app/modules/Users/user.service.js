@@ -13,17 +13,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userServices = void 0;
-const config_1 = __importDefault(require("../../../config"));
 const apiErrors_1 = __importDefault(require("../../../errors/apiErrors"));
 const post_model_1 = require("../post/post.model");
 const user_model_1 = require("./user.model");
-const bcrypt_1 = __importDefault(require("bcrypt"));
-const createUser = (userInfo) => __awaiter(void 0, void 0, void 0, function* () {
-    userInfo.password = yield bcrypt_1.default.hash(userInfo.password, Number(config_1.default.bcrypt_hash_sold));
-    userInfo.role = 'user';
-    const result = yield user_model_1.User.create(userInfo);
-    return result;
-});
+// const createUser = async (userInfo: IUser) => {
+//   userInfo.password = await bcrypt.hash(
+//     userInfo.password,
+//     Number(config.bcrypt_hash_sold)
+//   );
+//   userInfo.role = 'user';
+//   const result = await User.create(userInfo);
+//   return result;
+// };
 const getAllUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield user_model_1.User.find({ _id: { $ne: userId } }).sort({
         updatedAt: -1,
@@ -129,7 +130,6 @@ const unFollowingUser = (userId, followerId) => __awaiter(void 0, void 0, void 0
     };
 });
 exports.userServices = {
-    createUser,
     getAllUser,
     getSingleUser,
     getSingleUserWithId,

@@ -46,6 +46,10 @@ const UserSchema = new mongoose_1.Schema({
         type: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'user' }],
         default: [],
     },
+    isVerified: {
+        type: Boolean,
+        default: false,
+    },
     resetToken: {
         type: String,
         default: null,

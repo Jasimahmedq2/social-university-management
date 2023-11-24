@@ -15,11 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostServices = void 0;
 const post_model_1 = require("./post.model");
 const apiErrors_1 = __importDefault(require("../../../errors/apiErrors"));
-const cratePost = (id, images, videos, audios, payload) => __awaiter(void 0, void 0, void 0, function* () {
+const cratePost = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
     payload.user = id;
-    payload.images = images;
-    payload.videos = videos;
-    payload.audios = audios;
     const result = yield post_model_1.Post.create(payload);
     return result;
 });

@@ -31,10 +31,7 @@ app.use('/src/uploads/', express.static('src/uploads'));
 app.use(cookieParser());
 // app.use(cookieParser());
 const corsOptions = {
-  origin: [
-    'https://book-catalog-frontend.netlify.app',
-    'http://localhost:3000',
-  ],
+  origin: ['https://nextgen-social-media.netlify.app', 'http://localhost:3000'],
   credentials: true,
 };
 

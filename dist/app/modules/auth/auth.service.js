@@ -20,11 +20,58 @@ const user_model_1 = require("../Users/user.model");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const uuid_1 = require("uuid");
+const transporter = nodemailer_1.default.createTransport({
+    service: 'gmail',
+    auth: {
+        user: config_1.default.my_email,
+        pass: config_1.default.my_password,
+    },
+});
+const createUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    payload.password = yield bcrypt_1.default.hash(payload.password, Number(config_1.default.bcrypt_hash_sold));
+    payload.role = 'user';
+    const createSecret = yield jwtHelpers_1.jwtHelpers.createToken({ email: payload.email }, config_1.default.jwt.access_secret, config_1.default.jwt.access_expire);
+    const isExistUser = yield user_model_1.User.findOne({
+        email: payload.email,
+    });
+    if (isExistUser && isExistUser.isVerified) {
+        throw new apiErrors_1.default(400, 'already you have a account please login');
+    }
+    else if (isExistUser) {
+        const mailOptions = {
+            from: config_1.default.my_email,
+            to: payload.email,
+            subject: 'verify your email',
+            html: `
+    <P>Hello there, please verify your email</p>
+    <a href="http://localhost:3000/verify/${createSecret}/" target="_blank">Click here to verify your email</a>`,
+        };
+        const result = yield transporter.sendMail(mailOptions);
+        return result;
+    }
+    else {
+        yield user_model_1.User.create(payload);
+        const mailOptions = {
+            from: config_1.default.my_email,
+            to: payload.email,
+            subject: 'verify your email',
+            html: `
+    <P>Hello there, please verify your email</p>
+    <a href="http://localhost:3000/verify/${createSecret}/" target="_blank">Click here to verify your email</a>`,
+        };
+        const result = yield transporter.sendMail(mailOptions);
+        console.log({ createSecret });
+        return result;
+    }
+});
 const loginUser = (loginInfo) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = loginInfo;
     const isUserExist = yield user_model_1.User.findOne({ email: email });
     if (!isUserExist) {
         throw new apiErrors_1.default(404, "user doesn't exist");
+    }
+    if (!isUserExist.isVerified) {
+        throw new apiErrors_1.default(401, 'please verify your email first, then try to login');
     }
     const comparePass = yield bcrypt_1.default.compare(password, isUserExist.password);
     if (!comparePass) {
@@ -47,8 +94,18 @@ const loginUser = (loginInfo) => __awaiter(void 0, void 0, void 0, function* () 
             userId: isUserExist === null || isUserExist === void 0 ? void 0 : isUserExist._id.toString(),
             email: isUserExist === null || isUserExist === void 0 ? void 0 : isUserExist.email,
             name: isUserExist === null || isUserExist === void 0 ? void 0 : isUserExist.name,
+            profilePic: isUserExist === null || isUserExist === void 0 ? void 0 : isUserExist.profilePic,
         },
     };
+});
+const verifyEmailAndUpdateStatus = (token) => __awaiter(void 0, void 0, void 0, function* () {
+    const verifyToken = jwtHelpers_1.jwtHelpers.verifyToken(token, config_1.default.jwt.access_secret);
+    if (!verifyToken || !verifyToken.email) {
+        throw new apiErrors_1.default(401, 'maybe your verification time is expired, please try again');
+    }
+    const email = verifyToken.email;
+    const result = yield user_model_1.User.findOneAndUpdate({ email }, { $set: { isVerified: true } });
+    return result;
 });
 const refreshToken = (refreshToken) => __awaiter(void 0, void 0, void 0, function* () {
     let verifiedUser = null;
@@ -67,13 +124,6 @@ const refreshToken = (refreshToken) => __awaiter(void 0, void 0, void 0, functio
     return {
         accessToken: newAccessToken,
     };
-});
-const transporter = nodemailer_1.default.createTransport({
-    service: 'gmail',
-    auth: {
-        user: config_1.default.my_email,
-        pass: config_1.default.my_password,
-    },
 });
 const resetPasswordRequest = (email) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield user_model_1.User.findOne({ email: email });
@@ -128,8 +178,10 @@ const resetPassword = (payload) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.AuthServices = {
+    createUser,
     loginUser,
     refreshToken,
     resetPasswordRequest,
     resetPassword,
+    verifyEmailAndUpdateStatus,
 };
