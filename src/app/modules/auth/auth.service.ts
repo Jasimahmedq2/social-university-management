@@ -39,15 +39,15 @@ const createUser = async (payload: IUser) => {
   });
 
   if (isExistUser && isExistUser.isVerified) {
-    throw new ApiError(400, 'already you have a account please login');
+    throw new ApiError(400, 'already you have an account please login');
   } else if (isExistUser) {
     const mailOptions = {
       from: config.my_email,
       to: payload.email,
       subject: 'verify your email',
       html: `
-    <P>Hello there, please verify your email</p>
-    <a href="http://localhost:3000/verify/${createSecret}/" target="_blank">Click here to verify your email</a>`,
+    <P>Hello ${payload?.name?.firstName}, please verify your email</p>
+    <a href="https://nextgen-social-media.netlify.app/verify/${createSecret}/" target="_blank">Click here to verify your email</a>`,
     };
     const result = await transporter.sendMail(mailOptions);
 
@@ -60,8 +60,8 @@ const createUser = async (payload: IUser) => {
       to: payload.email,
       subject: 'verify your email',
       html: `
-    <P>Hello there, please verify your email</p>
-    <a href="http://localhost:3000/verify/${createSecret}/" target="_blank">Click here to verify your email</a>`,
+    <P>Hello ${payload?.name?.firstName}, please verify your email</p>
+    <a href="https://nextgen-social-media.netlify.app/verify/${createSecret}/" target="_blank">Click here to verify your email</a>`,
     };
     const result = await transporter.sendMail(mailOptions);
     console.log({ createSecret });
@@ -188,7 +188,7 @@ const resetPasswordRequest = async (email: string) => {
   user.resetTokenExpiration = resetTokenExpiration;
   await user.save();
 
-  const resetUrl = `https://book-catalog-frontend.netlify.app/set-password/${resetToken}`;
+  const resetUrl = `https://nextgen-social-media.netlify.app/set-password/${resetToken}`;
   const mailOptions = {
     from: 'jasim.dev48@gmail.com',
     to: email,

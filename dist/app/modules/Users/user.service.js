@@ -37,12 +37,14 @@ const getFriends = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     return result;
 });
 const getSuggestedFriends = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     const currentUser = yield user_model_1.User.findById(userId);
-    const currentFriends = currentUser === null || currentUser === void 0 ? void 0 : currentUser.followers;
+    const currentFriends = (_a = currentUser === null || currentUser === void 0 ? void 0 : currentUser.followers) !== null && _a !== void 0 ? _a : [];
+    const currentFollowing = (_b = currentUser === null || currentUser === void 0 ? void 0 : currentUser.following) !== null && _b !== void 0 ? _b : [];
     let result;
     if (currentFriends) {
         result = yield user_model_1.User.find({
-            _id: { $nin: [...currentFriends, userId] },
+            _id: { $nin: [...currentFriends, ...currentFollowing, userId] },
         }, { name: 1, profilePic: 1 });
     }
     else {
@@ -80,7 +82,7 @@ const updateUser = (id, payload) => __awaiter(void 0, void 0, void 0, function* 
     return result;
 });
 const userFollowing = (userId, followerId) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c;
+    var _c, _d, _e;
     const user = yield user_model_1.User.findById(userId);
     const followerUser = yield user_model_1.User.findById(followerId);
     console.log({
@@ -93,11 +95,11 @@ const userFollowing = (userId, followerId) => __awaiter(void 0, void 0, void 0, 
     if (!followerUser) {
         throw new apiErrors_1.default(404, "follower user doesn't exist");
     }
-    if ((_a = followerUser === null || followerUser === void 0 ? void 0 : followerUser.followers) === null || _a === void 0 ? void 0 : _a.includes(user === null || user === void 0 ? void 0 : user._id)) {
+    if ((_c = followerUser === null || followerUser === void 0 ? void 0 : followerUser.followers) === null || _c === void 0 ? void 0 : _c.includes(user === null || user === void 0 ? void 0 : user._id)) {
         throw new apiErrors_1.default(404, 'User is already being followed');
     }
-    (_b = followerUser === null || followerUser === void 0 ? void 0 : followerUser.followers) === null || _b === void 0 ? void 0 : _b.push(user._id);
-    (_c = user === null || user === void 0 ? void 0 : user.following) === null || _c === void 0 ? void 0 : _c.push(followerUser._id);
+    (_d = followerUser === null || followerUser === void 0 ? void 0 : followerUser.followers) === null || _d === void 0 ? void 0 : _d.push(user._id);
+    (_e = user === null || user === void 0 ? void 0 : user.following) === null || _e === void 0 ? void 0 : _e.push(followerUser._id);
     yield user.save();
     yield followerUser.save();
     return {
@@ -105,7 +107,7 @@ const userFollowing = (userId, followerId) => __awaiter(void 0, void 0, void 0, 
     };
 });
 const unFollowingUser = (userId, followerId) => __awaiter(void 0, void 0, void 0, function* () {
-    var _d, _e;
+    var _f, _g;
     const user = yield user_model_1.User.findById(userId);
     const followerUser = yield user_model_1.User.findById(followerId);
     console.log({
@@ -118,11 +120,11 @@ const unFollowingUser = (userId, followerId) => __awaiter(void 0, void 0, void 0
     if (!followerUser) {
         throw new apiErrors_1.default(404, "follower user doesn't exist");
     }
-    if (!((_d = followerUser === null || followerUser === void 0 ? void 0 : followerUser.followers) === null || _d === void 0 ? void 0 : _d.includes(user._id))) {
+    if (!((_f = followerUser === null || followerUser === void 0 ? void 0 : followerUser.followers) === null || _f === void 0 ? void 0 : _f.includes(user._id))) {
         throw new apiErrors_1.default(404, 'User is not being followed');
     }
     followerUser.followers = followerUser.followers.filter(followedUserId => followedUserId.toString() !== userId);
-    user.following = (_e = user === null || user === void 0 ? void 0 : user.following) === null || _e === void 0 ? void 0 : _e.filter(followingUserId => followingUserId.toString() !== followerId);
+    user.following = (_g = user === null || user === void 0 ? void 0 : user.following) === null || _g === void 0 ? void 0 : _g.filter(followingUserId => followingUserId.toString() !== followerId);
     yield user.save();
     yield followerUser.save();
     return {

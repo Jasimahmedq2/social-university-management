@@ -21,15 +21,27 @@ const getAllUser = async (userId: Types.ObjectId): Promise<IUser[]> => {
   });
   return result;
 };
-const getFriends = async (userId: string): Promise<IUser[] | IUser | null> => {
-  const result = await User.findOne(
+const getFriends = async (userId: string) => {
+  const followers = await User.findOne(
     { _id: userId },
     { followers: 1, _id: 0 }
-  ).populate('followers');
-  console.log({ result });
+  )
+    .lean()
+    .populate('followers');
 
+  const following = await User.findOne(
+    { _id: userId },
+    { following: 1, _id: 0 }
+  )
+    .lean()
+    .populate('following');
+  const followersArray = followers?.followers || [];
+  const followingArray = following?.following || [];
+
+  const result = [...followersArray, ...followingArray];
   return result;
 };
+
 const getSuggestedFriends = async (
   userId: string
 ): Promise<IUser[] | IUser | null> => {

@@ -50,10 +50,7 @@ app.use('/src/uploads/', express_1.default.static('src/uploads'));
 app.use((0, cookie_parser_1.default)());
 // app.use(cookieParser());
 const corsOptions = {
-    origin: [
-        'https://nextgen-social-media.netlify.app',
-        'http://localhost:3000',
-    ],
+    origin: ['https://nextgen-social-media.netlify.app', 'http://localhost:3000'],
     credentials: true,
 };
 // socket io
