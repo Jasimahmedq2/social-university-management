@@ -25,6 +25,17 @@ const getAllUser = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const ChatsUsers = catchAsync(async (req: Request, res: Response) => {
+  const user = req?.user;
+  const userId = user?.userId;
+  const result = await userServices.ChatsUsers(userId);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'successfully get all user',
+    data: result,
+  });
+});
 const getFriends = catchAsync(async (req: Request, res: Response) => {
   const userId = req?.user?.userId;
   const result = await userServices.getFriends(userId);
@@ -138,6 +149,7 @@ const unFollowingUser = catchAsync(async (req: Request, res: Response) => {
 
 export const userControllers = {
   getAllUser,
+  ChatsUsers,
   getSingleUser,
   getSingleUserWithId,
   deleteUser,

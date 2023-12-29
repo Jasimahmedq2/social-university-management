@@ -13,6 +13,7 @@ const router = express.Router();
 //   userControllers.createUser
 // );
 router.get('/get-users', auth('user'), userControllers.getAllUser);
+router.get('/get-chat-users', auth('user'), userControllers.ChatsUsers);
 router.get('/get-friends', auth(UserRole.USER), userControllers.getFriends);
 router.get(
   '/get-suggestedFriends',

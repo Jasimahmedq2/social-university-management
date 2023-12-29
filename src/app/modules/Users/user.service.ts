@@ -4,6 +4,7 @@ import { IPost } from '../post/post.interfaces';
 import { Post } from '../post/post.model';
 import { IUser } from './user.interfaces';
 import { User } from './user.model';
+import { Chat } from '../chats/chat.model';
 
 // const createUser = async (userInfo: IUser) => {
 //   userInfo.password = await bcrypt.hash(
@@ -21,6 +22,20 @@ const getAllUser = async (userId: Types.ObjectId): Promise<IUser[]> => {
   });
   return result;
 };
+
+const ChatsUsers = async (userId: Types.ObjectId): Promise<IUser[]> => {
+  const chats = await Chat.find({ participants: userId });
+  const participantIds = chats.flatMap(chat => chat.participants);
+
+  const uniqueParticipantIds = [...new Set(participantIds)].filter(
+    id => id.toString() !== userId.toString()
+  );
+
+  const users = await User.find({ _id: { $in: uniqueParticipantIds } });
+
+  return users;
+};
+
 const getFriends = async (userId: string) => {
   const followers = await User.findOne(
     { _id: userId },
@@ -179,4 +194,5 @@ export const userServices = {
   getFriends,
   getSuggestedFriends,
   userFeedPost,
+  ChatsUsers,
 };

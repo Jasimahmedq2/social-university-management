@@ -1,3 +1,4 @@
+import { Chat } from '../chats/chat.model';
 import { ICreateMessage } from './message.interface';
 import { Message } from './message.model';
 
@@ -15,9 +16,34 @@ const getMessages = async (senderId: string, receiverId: string) => {
 };
 
 const createMessage = async (payload: ICreateMessage) => {
-  const result = await Message.create(payload);
-  return result;
+  const { sender, receiver } = payload;
+  console.log({ payload });
+  const newMessage = new Message(payload);
+  await newMessage.save();
+  const chat = await Chat.findOne({
+    participants: {
+      $all: [sender, receiver],
+    },
+  });
+
+  if (!chat) {
+    const newChat = new Chat({
+      participants: [sender, receiver],
+      last_update: new Date(),
+    });
+    await newChat.save();
+    newMessage.chat = newChat._id;
+
+    await newMessage.save();
+  } else {
+    chat.last_update = new Date();
+    await chat.save();
+
+    newMessage.chat = chat._id;
+    await newMessage.save();
+  }
 };
+
 export const MessageServices = {
   getMessages,
   createMessage,
