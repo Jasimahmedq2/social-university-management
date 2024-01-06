@@ -24,16 +24,38 @@ const getAllUser = async (userId: Types.ObjectId): Promise<IUser[]> => {
 };
 
 const ChatsUsers = async (userId: Types.ObjectId): Promise<IUser[]> => {
-  const chats = await Chat.find({ participants: userId });
-  const participantIds = chats.flatMap(chat => chat.participants);
+  const chats = await Chat.find({ participants: userId }).sort({
+    last_update: -1,
+  });
 
-  const uniqueParticipantIds = [...new Set(participantIds)].filter(
-    id => id.toString() !== userId.toString()
-  );
+  const usersMap: Map<string, IUser> = new Map();
 
-  const users = await User.find({ _id: { $in: uniqueParticipantIds } });
+  for (const chat of chats) {
+    const participantIds = chat.participants.filter(
+      id => id.toString() !== userId.toString()
+    );
+    const users = await User.find({ _id: { $in: participantIds } }).sort({
+      updatedAt: -1,
+    });
 
-  return users;
+    users.forEach(user => {
+      usersMap.set(user._id.toString(), user);
+    });
+  }
+
+  const sortedUsers = Array.from(usersMap.values()).sort((a, b) => {
+    const aLastUpdate: any = chats.find(chat =>
+      chat.participants.includes(a._id)
+    )?.last_update;
+
+    const bLastUpdate: any = chats.find(chat =>
+      chat.participants.includes(b._id)
+    )?.last_update;
+
+    return bLastUpdate - aLastUpdate;
+  });
+
+  return sortedUsers;
 };
 
 const getFriends = async (userId: string) => {
