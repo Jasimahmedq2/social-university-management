@@ -12,17 +12,7 @@ import globalMiddleware from './app/middlewar/globalMIddlewar';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 
-// import http from 'http';
-// import socketio from 'socket.io';
-// import { Message } from './app/modules/message/message.model';
-
 const app: Application = express();
-// const server = http.createServer(app);
-// const io = socketio(server, {
-//   cors: {
-//     origin: '*',
-//   },
-// });
 
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
@@ -31,29 +21,14 @@ app.use('/src/uploads/', express.static('src/uploads'));
 app.use(cookieParser());
 // app.use(cookieParser());
 const corsOptions = {
-  origin: ['https://nextgen-social-media.netlify.app', 'http://localhost:3000'],
+  origin: [
+    'https://nextgen-social-media.netlify.app',
+    'http://localhost:3000',
+    'http://localhost:3001',
+  ],
   credentials: true,
 };
 
-// socket io
-
-// io.on('connection', socket => {
-//   console.log('New client connected:', socket.id);
-
-//   socket.on('joinRoom', (roomId: any) => {
-//     socket.join(roomId);
-//   });
-
-//   socket.on('sendMessage', async (message: { roomId: any }) => {
-//     const newMessage = new Message(message);
-//     await newMessage.save();
-//     io.to(message.roomId).emit('message', newMessage);
-//   });
-
-//   socket.on('disconnect', () => {
-//     console.log('Client disconnected:', socket.id);
-//   });
-// });
 
 app.use(cors(corsOptions));
 app.get('/', (req: Request, res: Response) => {
